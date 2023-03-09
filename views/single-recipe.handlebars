@@ -1,0 +1,44 @@
+<div class="single-recipe-wrapper">
+  <h2 id="recipe-title">{{{get_emoji}}} {{title}}</h2>
+  <p class="author">Posted by {{user.username}} on {{format_date createdAt}}</p>
+  <p id="recipe-text">{{recipe_text}}</p>
+</div>
+{{#if logged_in}}
+<hr class="hr">
+<form id="comment-post-wrapper">
+  <h3>Post a Comment:</h3>
+  <textarea id="commentText" project-id="{{id}}"></textarea>
+  <button id="postButton" class="submit" project-id="{{id}}">Post Comment</button>
+</form>
+{{/if}}
+<br><br>
+<div id="comments-wrapper">
+  <h3>Previous Comments:</h3>
+
+  <div class="previousComments">
+    {{#each comments as |comment|}}
+    <div class="previous-comment" project-id="{{comment.recipe_id}}" comment-id="{{comment.id}}">
+      <h6>Commented by {{comment.user.username}} on {{format_date comment.createdAt}}:</h6>
+      <p>{{comment.comment_text}}</p>
+      {{!-- Only delete/edit comments if they are the owner of it (by nature, this means they must also be logged in to
+      delete/edit their own comments) --}}
+      {{#if (is_commenter comment.user.id ../user_id)}}
+      <button class="deleteButton buttons submit" id="deleteButton" project-id="{{comment.recipe_id}}"
+        comment-id="{{comment.id}}">Delete Comment</button>
+      <button class="editButton buttons submit edit" id="editButton" project-id="{{comment.recipe_id}}"
+        comment-id="{{comment.id}}">Edit Comment</button>
+      <form class="edit-comment-wrapper" style="display:none">
+        <h5>Edit Comment:</h5>
+        <textarea id="commentText" project-id="{{id}}">{{comment_text}}</textarea>
+        <button class="cancel buttons submit">Cancel</button>
+        <button class="save-button buttons submit">Update Comment</button>
+      </form>
+      {{/if}}
+
+    </div>
+    {{/each}}
+  </div>
+</div>
+{{#if logged_in}}
+<script src="/js/comment.js"></script>
+{{/if}}
